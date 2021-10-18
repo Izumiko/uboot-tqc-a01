@@ -1,0 +1,25 @@
+on: [push, pull_request]
+
+jobs:
+  uboot:
+    runs-on: ubuntu-latest
+    name: Build U-Boot
+    steps:
+      - uses: actions/checkout@v2.1.0
+        name: checkout src
+        id: checkout
+      - name: Compile U-Boot
+        id: compile
+        run: |
+            bash build.sh
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "U-Boot for TQC a01"
+          draft: true
+          files: |
+            u-boot-sunxi-with-spl.bin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
