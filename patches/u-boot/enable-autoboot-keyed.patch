@@ -11,10 +11,10 @@ index 53eae8953e..1e931a0eb0 100644
  	select USE_PREBOOT
  	select SYS_RELOC_GD_ENV_ADDR
  	imply CMD_DM
-diff --git a/cmd/Kconfig b/cmd/Kconfig
+diff --git a/boot/Kconfig b/boot/Kconfig
 index d6d130edfa..46ed3a9d76 100644
---- a/common/Kconfig.boot
-+++ b/common/Kconfig.boot
+--- a/boot/Kconfig
++++ b/boot/Kconfig
 @@ -51,7 +51,7 @@ config AUTOBOOT_KEYED
  config AUTOBOOT_PROMPT
  	string "Autoboot stop prompt"

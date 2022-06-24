@@ -1,15 +1,15 @@
 #!/bin/bash
 
-ATFVER=v2.5
-SCPVER=v0.4
-UBOOTVER=v2021.10
+ATFVER=v2.7
+SCPVER=v0.5
+UBOOTVER=v2022.04
 
 sudo apt-get update && sudo apt-get install -y bc git build-essential bison flex python3 python3-distutils swig python3-dev libpython3-dev device-tree-compiler wget
-wget "https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu.tar.xz"
+wget "https://developer.arm.com/-/media/Files/downloads/gnu/11.2-2022.02/binrel/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz"
 wget "https://github.com/stffrdhrn/gcc/releases/download/or1k-10.0.0-20190723/or1k-linux-musl-10.0.0-20190723.tar.xz"
-tar xf gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu.tar.xz
+tar xf gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz
 tar xf or1k-linux-musl-10.0.0-20190723.tar.xz
-export PATH=`pwd`/gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu/bin:`pwd`/or1k-linux-musl/bin:$PATH
+export PATH=`pwd`/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu/bin:`pwd`/or1k-linux-musl/bin:$PATH
 
 
 wget -O uboot.tar.gz "https://github.com/u-boot/u-boot/archive/refs/tags/${UBOOTVER}.tar.gz"
@@ -36,7 +36,6 @@ export SCP=`pwd`/build/scp/scp.bin
 
 echo "Building U-Boot"
 cd ../u-boot
-patch -p1 < ../patches/u-boot/0020-sunxi-call-fdt_fixup_ethernet-again-to-set-macaddr-f.patch
 patch -p1 < ../patches/u-boot/add-tqc-a01.patch
 patch -p1 < ../patches/u-boot/enable-autoboot-keyed.patch
 patch -p1 < ../patches/u-boot/fdt-setprop-fix-unaligned-access.patch
