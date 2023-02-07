@@ -1,15 +1,15 @@
 #!/bin/bash
 
-ATFVER=v2.7
+ATFVER=v2.8
 SCPVER=v0.5
-UBOOTVER=v2022.04
+UBOOTVER=v2023.01
 
 sudo apt-get update && sudo apt-get install -y bc git build-essential bison flex python3 python3-distutils swig python3-dev libpython3-dev device-tree-compiler wget
-wget "https://developer.arm.com/-/media/Files/downloads/gnu/11.2-2022.02/binrel/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz"
-wget "https://github.com/stffrdhrn/gcc/releases/download/or1k-10.0.0-20190723/or1k-linux-musl-10.0.0-20190723.tar.xz"
-tar xf gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz
-tar xf or1k-linux-musl-10.0.0-20190723.tar.xz
-export PATH=`pwd`/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu/bin:`pwd`/or1k-linux-musl/bin:$PATH
+wget "https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz"
+wget "https://github.com/openrisc/or1k-gcc/releases/download/or1k-12.0.1-20220210-20220304/or1k-linux-12.0.1-20220210-20220304.tar.xz"
+tar xf arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
+tar xf or1k-linux-12.0.1-20220210-20220304.tar.xz
+export PATH=`pwd`/arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-linux-gnu/bin:`pwd`/or1k-linux/bin:$PATH
 
 
 wget -O uboot.tar.gz "https://github.com/u-boot/u-boot/archive/refs/tags/${UBOOTVER}.tar.gz"
@@ -22,24 +22,26 @@ tar xzf crust.tar.gz && mv crust-*/ crust
 
 echo "Building Arm Trusted Firmware"
 cd atf
-patch -p1 < ../patches/atf/0001-Fix-reset-issue-on-H6-by-using-R_WDOG.patch
-patch -p1 < ../patches/atf/0001-sunxi-Don-t-enable-referenced-regulators.patch
+for f in `ls ../patches/atf/`
+do
+  patch -p1 < ../patches/atf/$f
+done
 CROSS_COMPILE=aarch64-none-linux-gnu- make PLAT=sun50i_h6 DEBUG=0 bl31 || exit 1
 export BL31=`pwd`/build/sun50i_h6/release/bl31.bin
 
 echo "Building SCP firmware"
 cd ../crust
 sed -i '0,/lex/s//flex/' Makefile
-CROSS_COMPILE=or1k-linux-musl- make orangepi_3_defconfig
-CROSS_COMPILE=or1k-linux-musl- make scp || exit 1
+CROSS_COMPILE=or1k-linux- make orangepi_3_defconfig
+CROSS_COMPILE=or1k-linux- make scp || exit 1
 export SCP=`pwd`/build/scp/scp.bin
 
 echo "Building U-Boot"
 cd ../u-boot
-patch -p1 < ../patches/u-boot/add-tqc-a01.patch
-patch -p1 < ../patches/u-boot/enable-autoboot-keyed.patch
-patch -p1 < ../patches/u-boot/fdt-setprop-fix-unaligned-access.patch
-patch -p1 < ../patches/u-boot/sunxi-boot-splash.patch
+for f in `ls ../patches/u-boot/`
+do
+  patch -p1 < ../patches/u-boot/$f
+done
 CROSS_COMPILE=aarch64-none-linux-gnu- make clean
 CROSS_COMPILE=aarch64-none-linux-gnu- make tqc_a01_defconfig
 CROSS_COMPILE=aarch64-none-linux-gnu- make || exit 1
