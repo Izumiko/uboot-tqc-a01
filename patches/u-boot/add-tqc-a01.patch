@@ -1,12 +1,12 @@
 diff -ruN a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
 --- a/arch/arm/dts/Makefile	2021-09-15 06:58:10.000000000 +0800
 +++ b/arch/arm/dts/Makefile	2021-09-17 18:28:53.435658700 +0800
-@@ -642,7 +642,8 @@
- 	sun50i-h6-orangepi-lite2.dtb \
- 	sun50i-h6-orangepi-one-plus.dtb \
+@@ -680,7 +680,8 @@
  	sun50i-h6-pine-h64.dtb \
--	sun50i-h6-tanix-tx6.dtb
-+	sun50i-h6-tanix-tx6.dtb \
+ 	sun50i-h6-pine-h64-model-b.dtb \
+ 	sun50i-h6-tanix-tx6.dtb \
+-	sun50i-h6-tanix-tx6-mini.dtb
++	sun50i-h6-tanix-tx6-mini.dtb \
 +	sun50i-h6-tqc-a01.dtb
  dtb-$(CONFIG_MACH_SUN50I_H616) += \
  	sun50i-h616-orangepi-zero2.dtb
